@@ -211,8 +211,19 @@ Worker.prototype.toPdf = function toPdf() {
       // Add the page to the PDF.
       if (page)  this.prop.pdf.addPage();
       var imgData = pageCanvas.toDataURL('image/' + opt.image.type, opt.image.quality);
+      // before addImage to pdf callback
+      if (typeof opt.beforeAddImage === 'function') {
+        opt.beforeAddImage(this.prop.pdf, {
+          opt, page, imgData,
+          pageSize: {
+            width: this.prop.pageSize.width,
+            height: pageHeight,
+          }
+        })
+      };
       this.prop.pdf.addImage(imgData, opt.image.type, opt.margin[1], opt.margin[0],
-                        this.prop.pageSize.inner.width, pageHeight);
+        this.prop.pageSize.inner.width, pageHeight);
+      
     }
   });
 };

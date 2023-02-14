@@ -6,30 +6,35 @@ html2pdf.js converts any webpage or element into a printable PDF entirely client
 
 ## Table of contents
 
-- [Getting started](#getting-started)
-  - [CDN](#cdn)
-  - [Raw JS](#raw-js)
-  - [NPM](#npm)
-  - [Bower](#bower)
-  - [Console](#console)
-- [Usage](#usage)
-  - [Advanced usage](#advanced-usage)
-    - [Workflow](#workflow)
-    - [Worker API](#worker-api)
-- [Options](#options)
-  - [Page-breaks](#page-breaks)
-    - [Page-break settings](#page-break-settings)
-    - [Page-break modes](#page-break-modes)
-    - [Example usage](#example-usage)
-  - [Image type and quality](#image-type-and-quality)
-- [Progress tracking](#progress-tracking)
-- [Dependencies](#dependencies)
-- [Contributing](#contributing)
-  - [Issues](#issues)
-  - [Tests](#tests)
-  - [Pull requests](#pull-requests)
-- [Credits](#credits)
-- [License](#license)
+- [html2pdf.js](#html2pdfjs)
+  - [Table of contents](#table-of-contents)
+  - [Getting started](#getting-started)
+      - [CDN](#cdn)
+      - [Raw JS](#raw-js)
+      - [NPM](#npm)
+      - [Bower](#bower)
+      - [Console](#console)
+  - [Usage](#usage)
+    - [Advanced usage](#advanced-usage)
+      - [Workflow](#workflow)
+      - [Worker API](#worker-api)
+  - [Options](#options)
+    - [Page-breaks](#page-breaks)
+      - [Page-break settings](#page-break-settings)
+      - [Page-break modes](#page-break-modes)
+      - [Example usage](#example-usage)
+    - [Image type and quality](#image-type-and-quality)
+  - [Progress tracking](#progress-tracking)
+  - [Dependencies](#dependencies)
+  - [Contributing](#contributing)
+    - [Issues](#issues)
+      - [Known issues](#known-issues)
+    - [Tests](#tests)
+    - [Pull requests](#pull-requests)
+  - [Credits](#credits)
+      - [Contributors](#contributors)
+      - [Special thanks](#special-thanks)
+  - [License](#license)
 
 ## Getting started
 
@@ -171,7 +176,24 @@ The `opt` parameter has the following optional fields:
 |enableLinks |boolean         |`true`                          |If enabled, PDF hyperlinks are automatically added ontop of all anchor tags.                                |
 |html2canvas |object          |`{ }`                           |Configuration options sent directly to `html2canvas` ([see here](https://html2canvas.hertzen.com/configuration) for usage).|
 |jsPDF       |object          |`{ }`                           |Configuration options sent directly to `jsPDF` ([see here](http://rawgit.com/MrRio/jsPDF/master/docs/jsPDF.html) for usage).|
+|beforeAddImage       |(jsPDF: jsPDF, options: Options) => BeforeAddImageOptions          |undefined                          |call this function before `(new jsPDF()).addImage()`|
 
+
+```typescript
+interface BeforeAddImageOptions {
+  /** html2pdf.js's opt */
+  opt: Object;
+  /** now page number */
+  page: number;
+  /** created by canvas.toDataURL */
+  imgData: string;
+  /** pageSize */
+  pageSize: {
+    width: number;
+    height: number;
+  }
+}
+```
 ### Page-breaks
 
 html2pdf.js has the ability to automatically add page-breaks to clean up your document. Page-breaks can be added by CSS styles, set on individual elements using selectors, or avoided from breaking inside all elements (`avoid-all` mode).
