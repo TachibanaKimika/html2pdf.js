@@ -1,6 +1,6 @@
 /*!
- * html2pdf.js v0.10.1
- * Copyright (c) 2021 Erik Koopmans
+ * @onachi/html2pdf.js v0.10.1
+ * Copyright (c) 2023 Erik Koopmans
  * Released under the MIT License.
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -835,7 +835,21 @@ Worker.prototype.toPdf = function toPdf() {
       pageCtx.drawImage(canvas, 0, page * pxPageHeight, w, h, 0, 0, w, h); // Add the page to the PDF.
 
       if (page) this.prop.pdf.addPage();
-      var imgData = pageCanvas.toDataURL('image/' + opt.image.type, opt.image.quality);
+      var imgData = pageCanvas.toDataURL('image/' + opt.image.type, opt.image.quality); // before addImage to pdf callback
+
+      if (typeof opt.beforeAddImage === 'function') {
+        opt.beforeAddImage(this.prop.pdf, {
+          opt: opt,
+          page: page,
+          imgData: imgData,
+          pageSize: {
+            width: this.prop.pageSize.width,
+            height: pageHeight
+          }
+        });
+      }
+
+      ;
       this.prop.pdf.addImage(imgData, opt.image.type, opt.margin[1], opt.margin[0], this.prop.pageSize.inner.width, pageHeight);
     }
   });
